@@ -7,10 +7,10 @@ $ mkdir out; python3 -m lalian lalian out/lalian
 $ ls out/
 lalian  lalian.bat
 $ out/lalian --help
-usage: lalian [-h] module basename
+usage: lalian [-h] package basename
 
 positional arguments:
-  module
+  package
   basename
 
 options:
@@ -23,4 +23,4 @@ You can also install it with `pipx`:
 $ pipx install lalian
 ```
 
-Currently, this approach works only if the target module has no external dependencies. If external dependencies are required, they must be installed in the global Python environment.
+Currently, this approach works only if the target package has no external dependencies. If external dependencies are required, they must be installed in the global Python environment.

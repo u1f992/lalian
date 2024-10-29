@@ -4,30 +4,30 @@ import zipfile
 
 
 def find(root: pathlib.Path) -> "tuple[pathlib.Path, ...]":
-    modules = set(
+    packages = set(
         init_py.parent
         for init_py in root.rglob("__init__.py")
         if not init_py.parent.name.startswith("__")
     )
     # Sort by depth, then alphabetically
     sorted_ = sorted(
-        modules,
+        packages,
         key=lambda p: (len(p.parts), p),
     )
     return tuple(sorted_)
 
 
-def create_zip(module_root: pathlib.Path) -> bytes:
+def create_zip(package_root: pathlib.Path) -> bytes:
     with tempfile.TemporaryFile() as tf:
         with zipfile.ZipFile(tf, "w", zipfile.ZIP_DEFLATED) as z:
             # Preserve the directory structure
-            modules = find(module_root)
-            for module in modules:
-                for py in module.glob("*.py"):
-                    z.write(py, py.relative_to(module_root.parent))
+            packages = find(package_root)
+            for package in packages:
+                for module in package.glob("*.py"):
+                    z.write(module, module.relative_to(package_root.parent))
 
             # Copy entry point to the root
-            module_main = module_root.joinpath("__main__.py")
-            z.write(module_main, module_main.relative_to(module_root))
+            package_main = package_root.joinpath("__main__.py")
+            z.write(package_main, package_main.relative_to(package_root))
         tf.seek(0)
         return tf.read()
